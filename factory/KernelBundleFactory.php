@@ -21,13 +21,17 @@ class KernelBundleFactory {
      * @param      $class
      * @param      $rootDir
      * @param bool $debug
+     * @param      $configDir
      *
      * @return BaseKernel
      */
-    public static function buildKernel ($class, $rootDir, $debug = false) {
+    public static function buildKernel ($class, $rootDir, $debug = false, $configDir = null) {
         if (self::$kernel === null) {
+            if ($configDir === null) {
+                $configDir = $rootDir.'config/';
+            }
             $factory = new KernelFactory();
-            self::$kernel = new $class($factory, $rootDir.'config/', $rootDir.'var/cache/', $debug);
+            self::$kernel = new $class($factory, $configDir, $rootDir.'var/cache/', $debug);
             self::$kernel->initialize();
         }
 

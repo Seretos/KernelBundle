@@ -1,6 +1,7 @@
 <?php
 use http\KernelBundle\core\BaseKernel;
 use http\KernelBundle\factory\KernelFactory;
+use http\KernelBundle\interfaces\BundleInterface;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -33,7 +34,7 @@ class BaseKernelTest extends PHPUnit_Framework_TestCase {
         $this->mockFactory = $this->getMockBuilder(KernelFactory::class)
                                   ->disableOriginalConstructor()
                                   ->getMock();
-        $this->kernel = new BaseKernel($this->mockFactory, 'config', 'cache', true);
+        $this->kernel = new BaseKernel($this->mockFactory, 'config', 'cache', true, __DIR__.'/../factory/helper/');
 
         $this->reflection = new ReflectionClass(BaseKernel::class);
     }
@@ -87,7 +88,93 @@ class BaseKernelTest extends PHPUnit_Framework_TestCase {
         $method = $this->reflection->getMethod('buildContainer');
         $method->setAccessible(true);
 
-        $method->invokeArgs($this->kernel, ['example', $mockCache]);
+        $method->invokeArgs($this->kernel, ['example', $mockCache, []]);
+    }
+
+    /**
+     * @test
+     */
+    public function buildContainer_withBundles () {
+        $mockBundle1 = $this->getMockBuilder(BundleInterface::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        $mockBundle1->expects($this->any())
+                    ->method('getPath')
+                    ->will($this->returnValue(__DIR__.'/../factory/helper'));
+        $mockBundle2 = $this->getMockBuilder(BundleInterface::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        $mockBundle1->expects($this->any())
+                    ->method('getPath')
+                    ->will($this->returnValue(__DIR__));
+
+        $mockContainer = $this->getMockBuilder(ContainerBuilder::class)
+                              ->disableOriginalConstructor()
+                              ->getMock();
+
+        $this->mockFactory->expects($this->at(0))
+                          ->method('createContainerBuilder')
+                          ->will($this->returnValue($mockContainer));
+
+        $mockLoader = $this->getMockBuilder(YamlFileLoader::class)
+                           ->disableOriginalConstructor()
+                           ->getMock();
+
+        $this->mockFactory->expects($this->at(1))
+                          ->method('createYamlFileLoader')
+                          ->with($mockContainer, __DIR__.'/../factory/helper/Resources/config/')
+                          ->will($this->returnValue($mockLoader));
+
+        $mockLoader->expects($this->once())
+                   ->method('load')
+                   ->with('services.yml');
+
+        $mockLoader2 = $this->getMockBuilder(YamlFileLoader::class)
+                            ->disableOriginalConstructor()
+                            ->getMock();
+
+        $this->mockFactory->expects($this->at(2))
+                          ->method('createYamlFileLoader')
+                          ->with($mockContainer, 'config')
+                          ->will($this->returnValue($mockLoader2));
+
+        $mockLoader2->expects($this->once())
+                    ->method('load')
+                    ->with('services.yml');
+
+        $mockCache = $this->getMockBuilder(ConfigCache::class)
+                          ->disableOriginalConstructor()
+                          ->getMock();
+
+        $mockContainer->expects($this->once())
+                      ->method('compile');
+
+        $mockDumper = $this->getMockBuilder(PhpDumper::class)
+                           ->disableOriginalConstructor()
+                           ->getMock();
+
+        $this->mockFactory->expects($this->once())
+                          ->method('createDumper')
+                          ->with($mockContainer)
+                          ->will($this->returnValue($mockDumper));
+
+        $mockDumper->expects($this->once())
+                   ->method('dump')
+                   ->with(['class' => 'example', 'base_class' => Container::class, 'file' => null, 'debug' => true])
+                   ->will($this->returnValue('test'));
+
+        $mockContainer->expects($this->once())
+                      ->method('getResources')
+                      ->will($this->returnValue(['resources']));
+
+        $mockCache->expects($this->once())
+                  ->method('write')
+                  ->with('test', ['resources']);
+
+        $method = $this->reflection->getMethod('buildContainer');
+        $method->setAccessible(true);
+
+        $method->invokeArgs($this->kernel, ['example', $mockCache, [$mockBundle1, $mockBundle2]]);
     }
 
     /**

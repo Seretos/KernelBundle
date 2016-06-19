@@ -38,3 +38,19 @@ get the current service container:
 $container = $kernel->getContainer();
 $service = $container->get('my.example.service');
 ```
+
+you can create a custom kernel class to register bundles.
+```php
+class MyKernel extends BaseKernel {
+    public function registerBundles () {
+        $bundles = [
+            new \database\DatabaseIntegrationBundle\DatabaseIntegrationBundle(),
+        ];
+
+        return $bundles;
+    }
+}
+```
+```php
+$kernel = KernelBundleFactory::buildKernel(MyKernel::class,'/app/root/path/',$debug);
+```
