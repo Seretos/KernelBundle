@@ -1,12 +1,12 @@
 <?php
 use http\KernelBundle\core\BaseKernel;
 use http\KernelBundle\factory\KernelFactory;
-use http\KernelBundle\interfaces\BundleInterface;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 /**
  * Created by PhpStorm.
@@ -34,7 +34,7 @@ class BaseKernelTest extends PHPUnit_Framework_TestCase {
         $this->mockFactory = $this->getMockBuilder(KernelFactory::class)
                                   ->disableOriginalConstructor()
                                   ->getMock();
-        $this->kernel = new BaseKernel($this->mockFactory, 'config', 'cache', true, __DIR__.'/../factory/helper/');
+        $this->kernel = new BaseKernel($this->mockFactory, __DIR__.'/../factory/helper/', 'cache', true);
 
         $this->reflection = new ReflectionClass(BaseKernel::class);
     }
@@ -135,7 +135,7 @@ class BaseKernelTest extends PHPUnit_Framework_TestCase {
 
         $this->mockFactory->expects($this->at(2))
                           ->method('createYamlFileLoader')
-                          ->with($mockContainer, 'config')
+                          ->with($mockContainer, __DIR__.'/../factory/helper/')
                           ->will($this->returnValue($mockLoader2));
 
         $mockLoader2->expects($this->once())
@@ -256,7 +256,7 @@ class BaseKernelTest extends PHPUnit_Framework_TestCase {
 
         $this->mockFactory->expects($this->once())
                           ->method('createYamlFileLoader')
-                          ->with($mockContainer, 'config')
+                          ->with($mockContainer, __DIR__.'/../factory/helper/')
                           ->will($this->returnValue($mockLoader));
 
         $mockLoader->expects($this->once())

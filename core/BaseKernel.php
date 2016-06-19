@@ -9,10 +9,10 @@
 namespace http\KernelBundle\core;
 
 use http\KernelBundle\factory\KernelFactory;
-use http\KernelBundle\interfaces\BundleInterface;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 class BaseKernel {
     private $debug;

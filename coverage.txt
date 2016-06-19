@@ -1,16 +1,16 @@
-
-
-Code Coverage Report:     
-  2016-06-19 14:14:48     
-                          
- Summary:                 
-  Classes: 100.00% (3/3)  
-  Methods: 100.00% (12/12)
-  Lines:   100.00% (50/50)
-
-\http\KernelBundle\core::BaseKernel
-  Methods: 100.00% ( 6/ 6)   Lines: 100.00% ( 35/ 35)
-\http\KernelBundle\factory::KernelBundleFactory
-  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  9/  9)
-\http\KernelBundle\factory::KernelFactory
-  Methods: 100.00% ( 5/ 5)   Lines: 100.00% (  6/  6)
+
+
+Code Coverage Report:     
+  2016-06-19 17:13:12     
+                          
+ Summary:                 
+  Classes: 100.00% (3/3)  
+  Methods: 100.00% (12/12)
+  Lines:   100.00% (50/50)
+
+\http\KernelBundle\core::BaseKernel
+  Methods: 100.00% ( 6/ 6)   Lines: 100.00% ( 35/ 35)
+\http\KernelBundle\factory::KernelBundleFactory
+  Methods: 100.00% ( 1/ 1)   Lines: 100.00% (  9/  9)
+\http\KernelBundle\factory::KernelFactory
+  Methods: 100.00% ( 5/ 5)   Lines: 100.00% (  6/  6)
