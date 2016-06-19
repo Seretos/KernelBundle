@@ -11,7 +11,6 @@ namespace http\KernelBundle\core;
 
 use http\KernelBundle\factory\KernelFactory;
 use Symfony\Component\Config\ConfigCache;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
